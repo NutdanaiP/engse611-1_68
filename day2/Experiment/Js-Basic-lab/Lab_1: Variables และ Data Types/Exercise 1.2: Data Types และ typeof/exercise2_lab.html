@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 2: Data Types</title>
+</head>
+<body>
+    <h1>Data Types และ typeof</h1>
+    <div id="output"></div>
+
+    <script>
+        // ตัวอย่าง Data Types ต่างๆ
+        let text = "สวัสดีครับ";
+        let number = 34;
+        let decimal = 3.14159;
+        let isActive = true;
+        let emptyValue = null;
+        let notDefined;
+        let bigNumber = 1234567890123456789012345678901234567890n;
+        let studentData = {
+            name: "ณัฐดนัย",
+            age: 34,
+            major: "วิศวกรรมซอฟต์แวร์"
+        };
+
+        let subjects = ["Math", "Physics", "Programming"];
+        let today = new Date();          // Date = วันเวลา
+        let func = function(x) {         // Function = ฟังก์ชันก็ถือเป็น Object
+            return x * 2;
+        }
+
+        // ตรวจสอบ Data Type ด้วย typeof
+        console.log("=== Data Types ===");
+        console.log("typeof text:", typeof text);           // string
+        console.log("typeof number:", typeof number);       // number
+        console.log("typeof decimal:", typeof decimal);     // number
+        console.log("typeof isActive:", typeof isActive);   // boolean
+        console.log("typeof emptyValue:", typeof emptyValue); // object (!)
+        console.log("typeof notDefined:", typeof notDefined); // undefined
+        console.log("typeof bigNumber:", typeof bigNumber);
+        console.log("typeof studentData:", typeof studentData); // object
+        console.log("typeof subjects:", typeof subjects);   // object
+        console.log("typeof today:", typeof today);
+        console.log("typeof func:", typeof func);
+
+        // แสดงผลบนหน้าเว็บ
+        let output = document.getElementById('output');
+        output.innerHTML = `
+            <h3>ผลลัพธ์:</h3>
+            <p><strong>ข้อความ:</strong> ${text} (${typeof text})</p>
+            <p><strong>ตัวเลข:</strong> ${number} (${typeof number})</p>
+            <p><strong>ทศนิยม:</strong> ${decimal} (${typeof decimal})</p>
+            <p><strong>Boolean:</strong> ${isActive} (${typeof isActive})</p>
+            <p><strong>null:</strong> ${emptyValue} (${typeof emptyValue}) bug</p>
+            <p><strong>undefined:</strong> ${notDefined} (${typeof notDefined})</p>
+            <p><strong>BigInt:</strong> ${bigNumber} (${typeof bigNumber})</p>
+            <p><strong>Object:</strong> ${JSON.stringify(studentData)} (${typeof studentData})</p>
+            <p><strong>Array:</strong> ${JSON.stringify(subjects)} (${typeof subjects})</p>
+            <p><strong>Date:</strong> ${today.toString()} (${typeof today})</p>
+            <p><strong>Function:</strong> func(x) = x * 2 (${typeof func})</p>
+        `;
+
+        // ✨ พิเศษ: typeof null เป็น "object" นี่คือ JavaScript bug ที่มีชื่อเสียง!
+        console.log("⚠️ JavaScript Bug: typeof null =", typeof null);
+    </script>
+</body>
+</html>

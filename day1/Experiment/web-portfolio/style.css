@@ -1,0 +1,340 @@
+CSS Reset
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Typography */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #111111;
+    background-color: #c4e98d;
+}
+
+h1, h2, h3 {
+    margin-bottom: 1rem;
+    color: #f05c07;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 1000;
+}
+
+h2 {
+    font-size: 3rem;
+    border-bottom: 10px solid #d7d3d1;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+h3 {
+    font-size: 1.3rem;
+    color: #0b0b0b;
+}
+
+p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+/* Header Styling */
+header {
+    background: linear-gradient(135deg, #57e996 0%, #f4d979 100%);
+    color: rgb(29, 28, 28);
+    padding: 3rem 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    color: #f05c07;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Navigation */
+nav {
+    margin-top: 2rem;
+}
+
+nav a {
+    color: rgb(9, 9, 9);
+    text-decoration: none;
+    margin: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    border: 5px solid rgb(246, 232, 215);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+nav a:hover {
+    background-color: rgb(238, 236, 234);
+    color: #f05c07;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+/* Main Content */
+main {
+    max-width: 1000px;
+    width: 100%;    /* เพื่อให้ยืดหยุ่นตามจอ */
+    margin: 3rem auto;
+    padding: 0 2%;
+}
+
+section {
+    background: rgb(200, 245, 176);
+    margin-bottom: 3rem;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile Image */
+#about img {
+    border-radius: 50%;
+    border: 5px solid #d3d1c2;
+    margin-bottom: 1.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ทำให้รูปไม่ล้นจอ */
+img {
+    max-width: 100%;  
+    height: auto;      
+}
+
+
+/* Lists Styling */
+ul, ol {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+
+li strong {
+    color: #0d0e0d;
+}
+/* Links */
+a {
+    color: #88c25c;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Contact Section Special Styling */
+#contact {
+    background: linear-gradient(135deg, #57e996 0%, #f4d979 100%);
+    color: rgb(14, 15, 14);
+}
+
+#contact h2 {
+    color: rgb(28, 27, 27);
+    border-bottom-color: rgb(27, 26, 26);
+}
+
+#contact a {
+    color: rgb(22, 21, 21);
+    font-weight: bold;
+}
+
+#contact a:hover {
+    color: #181819;
+}
+
+/* Footer */
+footer {
+    background-color: #9dad7f;
+    color: rgb(16, 16, 16);
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+footer p {
+    margin: 0;
+    font-size: 1rem;
+}
+/* Color Variations for Sections */
+#education {
+    border-left: 10px solid #de968e;
+}
+
+#hobbies {
+    border-left: 10px solid #edc27e;
+}
+
+#about {
+    border-left: 10px solid #67ea9e;
+}
+
+#Future {
+    border-left: 10px solid #7667dc;
+}
+
+#contact {
+    border-left: 10px solid #090909;
+}
+
+/* Hover Effects */
+section h2 {
+    transition: color 0.3s ease;
+}
+
+section:hover h2 {
+    color: #0f0f0f;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Responsive Images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Flexible Container */
+main {
+    max-width: 1000px;
+    margin: 3rem auto;
+    padding: 0 1rem; /* ลด padding บนมือถือ */
+}
+
+/* Tablet Styles (768px and down) */
+@media (max-width: 768px) {
+    /* Header adjustments */
+    header {
+        padding: 2rem 0;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+
+    /* เมนูแบบ colum  */
+     nav {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Navigation adjustments */
+    nav a {
+        margin: 0.25rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Main content adjustments */
+    main {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    /* Profile image */
+    #about img {
+        width: 200px;
+    }
+
+    /* ซ่อน hobbies section บน tablet */
+    #hobbies {
+        display: none;
+    }
+}
+
+/* Mobile Styles (480px and down) */
+@media (max-width: 480px) {
+    /* Header adjustments */
+    header {
+        padding: 1.5rem 0;
+    }
+    
+    header h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Navigation - Stack vertically */
+    nav {
+        margin-top: 1rem;
+    }
+    
+    nav a {
+        display: block;
+        margin: 0.5rem auto;
+        max-width: 200px;
+        text-align: center;
+    }
+}
+    /* Main content */
+    main {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+    }
+    
+    section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
+    
+    p, li {
+        font-size: 1rem;
+    }
+    
+    /* Profile image */
+    #about img {
+        width: 150px;
+    }
+    
+    /* Lists - reduce margin */
+    ul, ol {
+        margin-left: 1rem;
+    }
+    
+    /* Footer */
+    footer {
+        padding: 1.5rem 1rem;
+    }

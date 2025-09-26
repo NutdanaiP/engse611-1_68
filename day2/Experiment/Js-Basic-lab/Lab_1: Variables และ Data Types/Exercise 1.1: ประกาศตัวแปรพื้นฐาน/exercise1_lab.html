@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 1: Variables</title>
+</head>
+<body>
+    <h1>ข้อมูลนักศึกษา</h1>
+    <p>เปิด Console (F12) เพื่อดูผลลัพธ์</p>
+
+    <script>
+        // ประกาศตัวแปรแต่ละประเภท
+        let studentName = "นายณัฐดนัย แปงจิตต์"; // String (ข้อความ)
+        const university = "มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนา เชียงใหม่(ดอยสะเก็ด)"; // String (ค่าคงที่)
+        var age = 34;                         // Number (ตัวเลข)
+        let gpa = 2.78;                       // Number (ทศนิยม)
+        let isStudent = true;                 // Boolean (จริง/เท็จ)
+        let address = "88/28 ม.12 ต.ป่าสัก อ.เมือง จ.ลำพูน 51000";  // Null (ค่าว่าง)
+        let phoneNumber;                 // Undefined (ไม่กำหนดค่า)
+
+        // แสดงผลลัพธ์ใน Console
+        console.log("=== ข้อมูลนักศึกษา ===");
+        console.log("ชื่อ:", studentName);
+        console.log("มหาวิทยาลัย:", university);
+        console.log("อายุ:", age);
+        console.log("เกรดเฉลี่ย:", gpa);
+        console.log("เป็นนักศึกษา:", isStudent);
+        console.log("ที่อยู่:", address);
+        console.log("เบอร์โทร:", phoneNumber);
+    </script>
+</body>
+</html>

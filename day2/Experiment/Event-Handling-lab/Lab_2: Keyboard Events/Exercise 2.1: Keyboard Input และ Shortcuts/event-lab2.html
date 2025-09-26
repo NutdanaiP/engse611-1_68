@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB 2: Keyboard Events</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .demo-section { background: white; padding: 20px; margin: 15px 0; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .demo-btn { background: #9c27b0; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        .demo-btn:hover { background: #7b1fa2; }
+        .input-area { padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; margin: 10px 0; background: #fafafa; }
+        .input-area:focus-within { border-color: #9c27b0; background: white; }
+        .key-display { background: #263238; color: #00e676; padding: 20px; border-radius: 8px; font-family: monospace; min-height: 150px; overflow-y: auto; margin: 10px 0; }
+        .typing-game { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .shortcut-hint { background: #e1f5fe; border-left: 4px solid #03a9f4; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .key-combo { background: #333; color: white; padding: 3px 8px; border-radius: 4px; font-family: monospace; margin: 0 2px; }
+    </style>
+</head>
+<body>
+    <h1>⌨️ LAB 2: Keyboard Events</h1>
+
+    <!-- Section 1: Basic Keyboard Input -->
+    <div class="demo-section">
+        <h3>⌨️ Keyboard Input Events</h3>
+        
+        <div class="input-area">
+            <label for="text-input" style="display: block; margin-bottom: 10px; font-weight: bold;">พิมพ์ข้อความและดู Events:</label>
+            <input type="text" id="text-input" placeholder="พิมพ์อะไรก็ได้..." 
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+        </div>
+        
+        <div class="key-display" id="key-display">
+            <div>🎹 Keyboard Event Monitor - พิมพ์ในช่องข้างบนเพื่อดู events</div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="demo-btn" onclick="clearKeyDisplay()">ล้าง Monitor</button>
+            <button class="demo-btn" onclick="toggleKeyLogger()">เปิด/ปิด Logger</button>
+            <button class="demo-btn" onclick="showKeyboardInfo()">ข้อมูล Keyboard</button>
+        </div>
+
+        <div class="shortcut-hint">
+            <strong>💡 ลองกดปุ่มพิเศษ:</strong>
+            <span class="key-combo">Enter</span>
+            <span class="key-combo">Tab</span>
+            <span class="key-combo">Escape</span>
+            <span class="key-combo">Arrow Keys</span>
+            <span class="key-combo">Shift</span>
+            <span class="key-combo">Ctrl</span>
+        </div>
+    </div>
+
+    <!-- Section 2: Keyboard Shortcuts -->
+    <div class="demo-section">
+        <h3>🚀 Keyboard Shortcuts</h3>
+        
+        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px 0;">
+            <h4>ลองกด Shortcuts เหล่านี้:</h4>
+            <ul style="margin: 10px 0;">
+                <li><span class="key-combo">Ctrl + S</span> - บันทึกข้อมูล (จำลอง)</li>
+                <li><span class="key-combo">Ctrl + Z</span> - Undo (จำลอง)</li>
+                <li><span class="key-combo">Ctrl + Enter</span> - ส่งข้อความ</li>
+                <li><span class="key-combo">Alt + H</span> - แสดงความช่วยเหลือ</li>
+                <li><span class="key-combo">F1</span> - About</li>
+                <li><span class="key-combo">Escape</span> - ปิดทุกอย่าง</li>
+            </ul>
+        </div>
+
+        <div id="shortcut-feedback" style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 10px 0; min-height: 50px;">
+            <strong>📢 Shortcut Feedback:</strong> กด shortcuts ข้างบนเพื่อดูผลลัพธ์
+        </div>
+
+        <div style="text-align: center;">
+            <button class="demo-btn" onclick="showShortcutHelp()">แสดง Shortcuts ทั้งหมด</button>
+            <button class="demo-btn" onclick="testShortcuts()">ทดสอบ Shortcuts</button>
+        </div>
+    </div>
+
+    <!-- Section 3: Typing Game -->
+    <div class="demo-section">
+        <h3>🎮 Mini Typing Game</h3>
+        
+        <div class="typing-game">
+            <h4>⚡ Speed Typing Challenge</h4>
+            <div id="typing-text" style="font-size: 1.2em; margin: 20px 0; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
+                พิมพ์ประโยคนี้ให้ถูกต้อง: "JavaScript เป็นภาษาโปรแกรมที่ทรงพลัง"
+            </div>
+            
+            <input type="text" id="typing-input" placeholder="พิมพ์ประโยคข้างบน..." 
+                   style="width: 80%; padding: 12px; border: none; border-radius: 6px; font-size: 16px; text-align: center;">
+            
+            <div id="typing-stats" style="margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 1.5em; font-weight: bold;" id="typing-speed">0</div>
+                    <div>WPM</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 1.5em; font-weight: bold;" id="typing-accuracy">100%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 1.5em; font-weight: bold;" id="typing-time">0</div>
+                    <div>วินาที</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button class="demo-btn" onclick="startTypingGame()" style="background: rgba(255,255,255,0.2); border: 2px solid white;">เริ่มเกมใหม่</button>
+                <button class="demo-btn" onclick="changeTypingText()" style="background: rgba(255,255,255,0.2); border: 2px solid white;">เปลี่ยนประโยค</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let keyLoggerEnabled = true;
+        let shortcuts = {};
+        let typingStartTime = null;
+        let typingTexts = [
+            "JavaScript เป็นภาษาโปรแกรมที่ทรงพลัง",
+            "DOM Manipulation ช่วยให้เว็บไซต์มีปฏิสัมพันธ์",
+            "Event Handling เป็นหัวใจของการโต้ตอบ",
+            "Programming ต้องอาศัยการฝึกฝนอย่างสม่ำเสมอ",
+            "Web Development เป็นทักษะที่มีค่า"
+        ];
+        let currentTypingText = typingTexts[0];
+
+        // Key display logging
+        function logKey(eventType, event) {
+            if (!keyLoggerEnabled) return;
+            
+            const display = document.getElementById('key-display');
+            const timestamp = new Date().toLocaleTimeString();
+            const keyInfo = `[${timestamp}] ${eventType}: "${event.key}" (Code: ${event.code}) ${event.ctrlKey ? '+ Ctrl' : ''} ${event.shiftKey ? '+ Shift' : ''} ${event.altKey ? '+ Alt' : ''}`;
+            
+            const logEntry = document.createElement('div');
+            logEntry.textContent = keyInfo;
+            display.appendChild(logEntry);
+            display.scrollTop = display.scrollHeight;
+            
+            console.log('Key Event:', eventType, event);
+        }
+
+        // LAB 2.1: Basic Keyboard Input
+        function setupKeyboardInput() {
+            const textInput = document.getElementById('text-input');
+            
+            // Key down event
+            textInput.addEventListener('keydown', function(event) {
+                logKey('KEYDOWN', event);
+                
+                // Special key handling
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    alert(`คุณกด Enter! ข้อความ: "${this.value}"`);
+                    logKey('SPECIAL', { ...event, message: 'Enter pressed - form submission prevented' });
+                }
+                
+                if (event.key === 'Tab') {
+                    logKey('SPECIAL', { ...event, message: 'Tab pressed - focus management' });
+                }
+                
+                if (event.key === 'Escape') {
+                    this.value = '';
+                    this.blur();
+                    logKey('SPECIAL', { ...event, message: 'Escape pressed - input cleared' });
+                }
+            });
+            
+            // Key up event
+            textInput.addEventListener('keyup', function(event) {
+                logKey('KEYUP', event);
+                
+                // Update character count
+                if (this.value.length > 0) {
+                    this.style.backgroundColor = '#e8f5e8';
+                } else {
+                    this.style.backgroundColor = 'white';
+                }
+            });
+            
+            // Input event (การเปลี่ยนแปลงค่า)
+            textInput.addEventListener('input', function(event) {
+                logKey('INPUT', { ...event, value: this.value, length: this.value.length });
+            });
+            
+            // Focus events
+            textInput.addEventListener('focus', function() {
+                logKey('FOCUS', { key: 'focus', message: 'Input focused' });
+                this.style.borderColor = '#9c27b0';
+            });
+            
+            textInput.addEventListener('blur', function() {
+                logKey('BLUR', { key: 'blur', message: 'Input blurred' });
+                this.style.borderColor = '#ddd';
+            });
+        }
+
+        function clearKeyDisplay() {
+            const display = document.getElementById('key-display');
+            display.innerHTML = '<div>🎹 Keyboard Event Monitor - พิมพ์ในช่องข้างบนเพื่อดู events</div>';
+        }
+
+        function toggleKeyLogger() {
+            keyLoggerEnabled = !keyLoggerEnabled;
+            const status = keyLoggerEnabled ? 'เปิด' : 'ปิด';
+            logKey('LOGGER', { key: 'toggle', message: `Key Logger ${status}` });
+        }
+
+        function showKeyboardInfo() {
+            const info = `
+                🎹 ข้อมูล Keyboard API:
+                - event.key: ค่าของปุ่มที่กด
+                - event.code: รหัสทางกายภาพของปุ่ม
+                - event.ctrlKey: กด Ctrl หรือไม่
+                - event.shiftKey: กด Shift หรือไม่
+                - event.altKey: กด Alt หรือไม่
+                - event.metaKey: กด Meta (Cmd/Win) หรือไม่
+            `;
+            alert(info);
+        }
+
+        // LAB 2.2: Keyboard Shortcuts
+        function setupShortcuts() {
+            // Global shortcut listener
+            document.addEventListener('keydown', function(event) {
+                const combo = [];
+                
+                if (event.ctrlKey) combo.push('Ctrl');
+                if (event.altKey) combo.push('Alt');
+                if (event.shiftKey) combo.push('Shift');
+                combo.push(event.key);
+                
+                const shortcutKey = combo.join('+');
+                
+                // Handle specific shortcuts
+                switch (shortcutKey) {
+                    case 'Ctrl+s':
+                        event.preventDefault();
+                        showShortcutFeedback('💾 บันทึกข้อมูลแล้ว (จำลอง)', 'success');
+                        break;
+                        
+                    case 'Ctrl+z':
+                        event.preventDefault();
+                        showShortcutFeedback('↶ Undo การดำเนินการล่าสุด (จำลอง)', 'info');
+                        break;
+                        
+                    case 'Ctrl+Enter':
+                        event.preventDefault();
+                        showShortcutFeedback('📤 ส่งข้อความแล้ว!', 'success');
+                        break;
+                        
+                    case 'Alt+h':
+                        event.preventDefault();
+                        showShortcutFeedback('❓ แสดงหน้าความช่วยเหลือ', 'info');
+                        break;
+                        
+                    case 'F1':
+                        event.preventDefault();
+                        showShortcutFeedback('ℹ️ Event Handling LAB - สร้างโดย JavaScript', 'info');
+                        break;
+                        
+                    case 'Escape':
+                        showShortcutFeedback('🚫 ปิดทุกอย่างและรีเซ็ต', 'warning');
+                        document.getElementById('text-input').value = '';
+                        document.getElementById('typing-input').value = '';
+                        break;
+                        
+                    default:
+                        // Log other combinations
+                        if (combo.length > 1) {
+                            console.log('Unhandled shortcut:', shortcutKey);
+                        }
+                }
+            });
+        }
+
+        function showShortcutFeedback(message, type = 'info') {
+            const feedback = document.getElementById('shortcut-feedback');
+            const colors = {
+                success: '#e8f5e8',
+                info: '#e3f2fd',
+                warning: '#fff3e0',
+                error: '#ffebee'
+            };
+            
+            feedback.style.backgroundColor = colors[type];
+            feedback.innerHTML = `<strong>📢 Shortcut Feedback:</strong> ${message}`;
+            
+            setTimeout(() => {
+                feedback.style.backgroundColor = '#e8f5e8';
+                feedback.innerHTML = '<strong>📢 Shortcut Feedback:</strong> กด shortcuts ข้างบนเพื่อดูผลลัพธ์';
+            }, 3000);
+        }
+
+        function showShortcutHelp() {
+            const help = `
+🚀 Keyboard Shortcuts ทั้งหมด:
+
+💾 Ctrl + S - บันทึกข้อมูล
+↶ Ctrl + Z - Undo
+📤 Ctrl + Enter - ส่งข้อความ
+❓ Alt + H - ความช่วยเหลือ
+ℹ️ F1 - About
+🚫 Escape - ปิด/รีเซ็ต
+
+💡 เคล็ดลับ: Shortcuts เหล่านี้ทำงานทุกที่ในหน้าเว็บ
+            `;
+            alert(help);
+        }
+
+        function testShortcuts() {
+            const shortcuts = ['Ctrl+S', 'Ctrl+Z', 'Ctrl+Enter', 'Alt+H', 'F1'];
+            let message = '🧪 ทดสอบ Shortcuts:\n\n';
+            
+            shortcuts.forEach(shortcut => {
+                message += `✅ ${shortcut} - พร้อมใช้งาน\n`;
+            });
+            
+            message += '\n💡 ลองกด shortcuts เหล่านี้เพื่อดูการทำงาน';
+            alert(message);
+        }
+
+        // LAB 2.3: Typing Game
+        function setupTypingGame() {
+            const typingInput = document.getElementById('typing-input');
+            let startTime = null;
+            
+            typingInput.addEventListener('input', function() {
+                if (!startTime) {
+                    startTime = Date.now();
+                    typingStartTime = startTime;
+                }
+                
+                updateTypingStats();
+            });
+            
+            typingInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    checkTypingComplete();
+                }
+            });
+        }
+
+        function updateTypingStats() {
+            const input = document.getElementById('typing-input').value;
+            const targetText = currentTypingText;
+            
+            if (!typingStartTime) return;
+            
+            // คำนวณเวลา
+            const elapsedTime = (Date.now() - typingStartTime) / 1000;
+            document.getElementById('typing-time').textContent = Math.round(elapsedTime);
+            
+            // คำนวณ WPM (Words Per Minute)
+            const words = input.trim().split(' ').length;
+            const wpm = Math.round((words / elapsedTime) * 60) || 0;
+            document.getElementById('typing-speed').textContent = wpm;
+            
+            // คำนวณ Accuracy
+            let correct = 0;
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] === targetText[i]) {
+                    correct++;
+                }
+            }
+            const accuracy = input.length > 0 ? Math.round((correct / input.length) * 100) : 100;
+            document.getElementById('typing-accuracy').textContent = accuracy + '%';
+            
+            // เปลี่ยนสีตาม accuracy
+            const typingInput = document.getElementById('typing-input');
+            if (accuracy >= 90) {
+                typingInput.style.backgroundColor = '#c8e6c9';
+            } else if (accuracy >= 70) {
+                typingInput.style.backgroundColor = '#fff9c4';
+            } else {
+                typingInput.style.backgroundColor = '#ffcdd2';
+            }
+        }
+
+        function checkTypingComplete() {
+            const input = document.getElementById('typing-input').value;
+            const targetText = currentTypingText;
+            
+            if (input === targetText) {
+                const elapsedTime = (Date.now() - typingStartTime) / 1000;
+                const wpm = Math.round((targetText.split(' ').length / elapsedTime) * 60);
+                
+                alert(`🎉 เก่งมาก! เสร็จใน ${elapsedTime.toFixed(1)} วินาที\nความเร็ว: ${wpm} WPM`);
+                startTypingGame();
+            } else {
+                alert('⚠️ ยังไม่ถูกต้อง ลองอีกครั้ง');
+            }
+        }
+
+        function startTypingGame() {
+            document.getElementById('typing-input').value = '';
+            document.getElementById('typing-input').style.backgroundColor = 'white';
+            document.getElementById('typing-speed').textContent = '0';
+            document.getElementById('typing-accuracy').textContent = '100%';
+            document.getElementById('typing-time').textContent = '0';
+            typingStartTime = null;
+            
+            document.getElementById('typing-input').focus();
+        }
+
+        function changeTypingText() {
+            const randomIndex = Math.floor(Math.random() * typingTexts.length);
+            currentTypingText = typingTexts[randomIndex];
+            document.getElementById('typing-text').innerHTML = 
+                `พิมพ์ประโยคนี้ให้ถูกต้อง: "${currentTypingText}"`;
+            startTypingGame();
+        }
+
+        // Initialize all keyboard events
+        function initializeKeyboardEvents() {
+            setupKeyboardInput();
+            setupShortcuts();
+            setupTypingGame();
+            
+            console.log('=== Keyboard Events LAB 2 เริ่มต้น ===');
+        }
+
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeKeyboardEvents();
+        });
+    </script>
+</body>
+</html>

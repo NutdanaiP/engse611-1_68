@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercise 5: Array Methods</title>
+</head>
+<body>
+    <h1>จัดการข้อมูลนักกรีฑา</h1>
+
+    <div>
+      <input type="text" id="athleteName" placeholder="ชื่อนักกีฬา" />
+      <input
+        type="number"
+        id="athleteTime"
+        placeholder="เวลาที่ดีที่สุด (วินาที)"
+        step="0.01"
+      />
+      <input type="number" id="athleteComp" placeholder="จำนวนการแข่งขัน" />
+      <br /><br />
+      <button onclick="addAthlete()">เพิ่มนักกรีฑา</button>
+      <button onclick="removeAthlete()">ลบนักกรีฑาคนสุดท้าย</button>
+      <button onclick="showAllAthletes()">แสดงนักกรีฑาทั้งหมด</button>
+      <button onclick="searchAthlete()">ค้นหานักกรีฑา</button>
+      <button onclick="showStats()">แสดงสถิติ</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+      // Array ของนักกรีฑา (Object)
+      let athletes = [
+        { name: "ทองดี", bestTime: 12.5, competitions: 5 },
+        { name: "สมหวัง", bestTime: 11.8, competitions: 8 },
+        { name: "สมหมาย", bestTime: 13.2, competitions: 3 },
+        { name: "บุญมี", bestTime: 15.2, competitions: 1 },
+        { name: "บุญชู", bestTime: 10.9, competitions: 10 },
+      ];
+
+      // เพิ่มนักกรีฑา (push)
+      function addAthlete() {
+        const name = document.getElementById("athleteName").value.trim();
+        const time = parseFloat(document.getElementById("athleteTime").value);
+        const comp = parseInt(document.getElementById("athleteComp").value);
+
+        if (!name || isNaN(time) || isNaN(comp)) {
+          alert("กรุณากรอกข้อมูลให้ครบ");
+          return;
+        }
+
+        athletes.push({ name: name, bestTime: time, competitions: comp });
+        document.getElementById(
+          "result"
+        ).innerHTML = `<p>เพิ่มนักกรีฑา: ${name}</p>`;
+      }
+
+      // ลบนักกรีฑาคนสุดท้าย (pop)
+      function removeAthlete() {
+        if (athletes.length > 0) {
+          const removed = athletes.pop();
+          document.getElementById(
+            "result"
+          ).innerHTML = `<p>ลบนักกรีฑา: ${removed.name}</p>`;
+        } else {
+          document.getElementById(
+            "result"
+          ).innerHTML = `<p>ไม่มีนักกรีฑาให้ลบ</p>`;
+        }
+      }
+
+      // แสดงนักกรีฑาทั้งหมด (join)
+      function showAllAthletes() {
+        if (athletes.length === 0) {
+          document.getElementById(
+            "result"
+          ).innerHTML = `<p>ยังไม่มีนักกรีฑา</p>`;
+          return;
+        }
+
+        let list = athletes
+          .map(
+            (a) =>
+              `${a.name} - เวลา: ${a.bestTime}s, แข่งขัน: ${a.competitions}`
+          )
+          .join("<br>");
+        document.getElementById(
+          "result"
+        ).innerHTML = `<h3>รายชื่อนักกรีฑา (${athletes.length} คน)</h3>${list}`;
+      }
+
+      // ค้นหานักกรีฑา (filter)
+      function searchAthlete() {
+        const keyword = document.getElementById("athleteName").value.trim();
+        if (!keyword) {
+          alert("กรุณากรอกชื่อนักกรีฑาที่ต้องการค้นหา");
+          return;
+        }
+
+        const found = athletes.filter((a) => a.name.includes(keyword));
+        if (found.length > 0) {
+          let list = found
+            .map(
+              (a) =>
+                `${a.name} - เวลา: ${a.bestTime}s, แข่งขัน: ${a.competitions}`
+            )
+            .join("<br>");
+          document.getElementById("result").innerHTML = `<p>🔍 พบ:</p>${list}`;
+        } else {
+          document.getElementById(
+            "result"
+          ).innerHTML = `<p>ไม่พบนักกรีฑาชื่อ "${keyword}"</p>`;
+        }
+      }
+
+      // สถิติ (reduce)
+      function showStats() {
+        if (athletes.length === 0) {
+          document.getElementById(
+            "result"
+          ).innerHTML = `<p>ยังไม่มีนักกรีฑา</p>`;
+          return;
+        }
+
+        const totalTime = athletes.reduce((sum, a) => sum + a.bestTime, 0);
+        const avgTime = totalTime / athletes.length;
+
+        const totalComp = athletes.reduce((sum, a) => sum + a.competitions, 0);
+
+        // นักกรีฑาที่เร็วที่สุด
+        const fastest = athletes.reduce((prev, curr) =>
+          prev.bestTime < curr.bestTime ? prev : curr
+        );
+
+        document.getElementById("result").innerHTML = `
+        <h3>สถิติทั่วไป</h3>
+        <ul>
+          <li>จำนวนนักกรีฑา: ${athletes.length}</li>
+          <li>เวลาเฉลี่ย: ${avgTime.toFixed(2)} วินาที</li>
+          <li>จำนวนการแข่งขันรวม: ${totalComp} ครั้ง</li>
+          <li>นักกรีฑาที่เร็วที่สุด: ${fastest.name} (${fastest.bestTime}s)</li>
+        </ul>
+      `;
+      }
+
+      console.log("=== Array of Athletes Demo ===", athletes);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 6: Objects</title>
+</head>
+<body>
+    <h1>Object ซ้อน Object</h1>
+    
+    <div>
+        <h3>สร้างข้อมูลนักศึกษา:</h3>
+        <input type="text" id="objName" placeholder="ชื่อ" value="">
+        <input type="number" id="objAge" placeholder="อายุ" value="">
+        <input type="text" id="objMajor" placeholder="สาขา" value="">
+        <input type="number" id="objGPA" placeholder="GPA" value="" step="0.01" min="0" max="4">
+        <br><br>
+        <!-- ฟิลด์สำหรับที่อยู่ -->
+        <input type="text" id="objProvince" placeholder="จังหวัด" value="">
+        <input type="text" id="objDistrict" placeholder="อำเภอ/เขต" value="">
+        <input type="text" id="objZipcode" placeholder="รหัสไปรษณีย์" value="">
+        <br><br>
+        <!-- ฟิลด์สำหรับการติดต่อ -->
+        <input type="text" id="objPhone" placeholder="เบอร์โทร" value="">
+        <input type="email" id="objEmail" placeholder="อีเมล" value="">
+        <br><br>
+        <button onclick="createStudent()">สร้างข้อมูลนักศึกษา</button>
+        <button onclick="showAllStudents()">แสดงนักศึกษาทั้งหมด</button>
+        <button onclick="findTopStudent()">หานักศึกษาเก่ง</button>
+    </div>
+    
+    <div id="objectResult"></div>
+
+    <script>
+        let allStudents = [];
+
+        function createStudent() {
+            const name = document.getElementById('objName').value;
+            const age = parseInt(document.getElementById('objAge').value);
+            const major = document.getElementById('objMajor').value;
+            const gpa = parseFloat(document.getElementById('objGPA').value);
+
+            // ข้อมูลที่อยู่
+            const province = document.getElementById('objProvince').value;
+            const district = document.getElementById('objDistrict').value;
+            const zipcode = document.getElementById('objZipcode').value;
+
+            // ข้อมูลการติดต่อ
+            const phone = document.getElementById('objPhone').value;
+            const email = document.getElementById('objEmail').value;
+            
+            // Object ซับซ้อน (Nested Object)
+            const newStudent = {
+                name: name,
+                age: age,
+                major: major,
+                gpa: gpa,
+                subjects: ["วิชาพื้นฐาน"],
+                address: { 
+                    province: province, 
+                    district: district, 
+                    zipcode: zipcode,
+                    contact: { // Object ซ้อนอีกชั้น
+                        phone: phone , email: email
+                    }
+                },
+                getFullInfo: function() {
+                    return `${this.name} อายุ ${this.age} ปี สาขา${this.major} GPA ${this.gpa}`;
+                },
+                getGradeStatus: function() {
+                    if (this.gpa >= 3.5) return "เก่งมาก";
+                    if (this.gpa >= 3.0) return "ดี";
+                    if (this.gpa >= 2.5) return "ปานกลาง";
+                    return "ต้องพยายาม";
+                },
+                addSubject: function(subject) {
+                    this.subjects.push(subject);
+                }
+            };
+            
+            allStudents.push(newStudent);
+            
+            // แสดงผล
+            let result = `
+                <h3>สร้างนักศึกษาใหม่เรียบร้อย!</h3>
+                <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <h4>${newStudent.name}</h4>
+                    <p><strong>ข้อมูลนักศึกษา:</strong> ${newStudent.getFullInfo()}</p>
+                    <p><strong>ผลการเรียน:</strong> ${newStudent.getGradeStatus()}</p>
+                    <p><strong>ที่อยู่:</strong> ${newStudent.address.district}, ${newStudent.address.province} (${newStudent.address.zipcode})</p>
+                    <p><strong>ติดต่อ:</strong> ${newStudent.address.contact.phone}, อีเมล: ${newStudent.address.contact.email}</p>
+                    <p><strong>วิชาที่เรียน:</strong> ${newStudent.subjects.join(", ")}</p>
+                </div>
+            `;
+            
+            document.getElementById('objectResult').innerHTML = result;
+            
+            console.log("สร้างนักศึกษาใหม่:", newStudent);
+            console.log("Object ซ้อน Object:", newStudent.address);
+        }
+
+        function showAllStudents() {
+            let result = `<h3>นักศึกษาทั้งหมด (${allStudents.length} คน):</h3>`;
+            
+            allStudents.forEach((student, index) => {
+                result += `
+                    <div style="background: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${index + 1}. ${student.getFullInfo()}</strong><br>
+                        ผลการเรียน: ${student.getGradeStatus()}<br>
+                        ที่อยู่: ${student.address.district}, ${student.address.province} ${student.address.zipcode}<br>
+                        ติดต่อ: ${student.address.contact.phone}, ${student.address.contact.email}<br>
+                        วิชา: ${student.subjects.join(", ")}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('objectResult').innerHTML = result;
+        }
+
+        function findTopStudent() {
+            if (allStudents.length === 0) {
+                document.getElementById('objectResult').innerHTML = "<p>ยังไม่มีนักศึกษา</p>";
+                return;
+            }
+            let topStudent = allStudents.reduce((prev, current) => (prev.gpa > current.gpa) ? prev : current);
+            let avg = allStudents.reduce((sum, s) => sum + s.gpa, 0) / allStudents.length;
+
+            let result = `
+                <h3>สถิติและนักศึกษาเก่ง:</h3>
+                <div style="background: #fffacd; padding: 15px; border-radius: 8px;">
+                    <h4>🏆 นักศึกษาเก่งที่สุด:</h4>
+                    <p><strong>${topStudent.name}</strong> - GPA: ${topStudent.gpa} (${topStudent.getGradeStatus()})</p>
+                    <p>สาขา: ${topStudent.major}</p>
+                    
+                    <h4>📊 สถิติทั่วไป:</h4>
+                    <ul>
+                        <li>จำนวนนักศึกษา: ${allStudents.length} คน</li>
+                        <li>GPA เฉลี่ย: ${avg.toFixed(2)}</li>
+                        <li>นักศึกษาเก่งมาก (≥ 3.5): ${allStudents.filter(s => s.gpa >= 3.5).length} คน</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('objectResult').innerHTML = result;
+        }
+    </script>
+</body>
+</html>
