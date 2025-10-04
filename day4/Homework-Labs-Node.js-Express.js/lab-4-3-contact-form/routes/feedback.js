@@ -1,74 +1,61 @@
 const express = require('express');
 const router = express.Router();
-
 const { validateFeedback } = require('../middleware/validation');
 const { appendToJsonFile, readJsonFile } = require('../middleware/fileManager');
 
-// ชื่อไฟล์เก็บข้อมูล
-const FEEDBACK_FILE = 'feedback.json';
-
-
-// POST /api/feedback
-// รับความคิดเห็นจากผู้ใช้
-// ตรวจสอบด้วย validateFeedback
-// บันทึกลง feedback.json
+// POST /api/feedback - บันทึกความคิดเห็น
 router.post('/', validateFeedback, async (req, res) => {
     try {
-        const newFeedback = await appendToJsonFile('feedback.json', req.body);
-        
-        if (!newFeedback) {
-            return res.status(500).json({
+        const result = await appendToJsonFile('feedback.json', req.body);
+        if (result) {
+            res.status(201).json({
+                success: true,
+                message: 'บันทึกความคิดเห็นสำเร็จ',
+                data: result
+            });
+        } else {
+            res.status(500).json({
                 success: false,
-                message: 'Failed to save feedback'
+                message: 'เกิดข้อผิดพลาดในการบันทึกความคิดเห็น'
             });
         }
-
-        res.status(201).json({
-            success: true,
-            message: 'Feedback saved successfully',
-            data: newFeedback
-        });
-
     } catch (error) {
-        console.error('Error saving feedback:', error);
+        console.error('เกิดข้อผิดพลาดใน POST /api/feedback:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์'
         });
     }
 });
 
-// GET /api/feedback/stats
-// ดึงข้อมูล feedback ทั้งหมด
-// คำนวณสถิติ เช่น จำนวน feedback และค่าเฉลี่ย rating
+// GET /api/feedback/stats - ดึงสถิติความคิดเห็น
 router.get('/stats', async (req, res) => {
     try {
         const feedback = await readJsonFile('feedback.json');
         
-        const totalFeedback = Array.isArray(feedback) ? feedback.length : 0;
-        const averageRating = totalFeedback > 0 
-            ? feedback.reduce((sum, item) => sum + item.rating, 0) / totalFeedback 
-            : 0;
-        const ratingDistribution = [1, 2, 3, 4, 5].reduce((acc, rating) => {
-            acc[rating] = feedback.filter(item => item.rating === rating).length;
-            return acc;
-        }, {});
-
-        res.json({
-            success: true,
-            message: 'Feedback statistics retrieved successfully',
-            stats: {
-                totalFeedback,
-                averageRating: parseFloat(averageRating.toFixed(2)),
-                ratingDistribution
+        // คำนวณสถิติ
+        const totalFeedback = feedback.length;
+        const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        
+        feedback.forEach(item => {
+            if (item.rating >= 1 && item.rating <= 5) {
+                ratingDistribution[item.rating]++;
             }
         });
 
+        res.json({
+            success: true,
+            message: 'ดึงสถิติความคิดเห็นสำเร็จ',
+            stats: {
+                totalFeedback,
+                ratingDistribution
+            }
+        });
     } catch (error) {
-        console.error('Error retrieving feedback stats:', error);
+        console.error('เกิดข้อผิดพลาดใน GET /api/feedback/stats:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'เกิดข้อผิดพลาดในการดึงสถิติ'
         });
     }
 });

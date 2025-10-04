@@ -8,12 +8,22 @@ const statusMessages = document.getElementById('statusMessages');
 const apiResults = document.getElementById('apiResults');
 const ratingSlider = document.getElementById('rating');
 const ratingValue = document.getElementById('ratingValue');
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initializeForms();
     setupEventListeners();
+    initializeTheme();
 });
+
+// เริ่มต้น theme จาก localStorage
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+}
 
 function initializeForms() {
     // Update rating display
@@ -35,137 +45,96 @@ function setupEventListeners() {
         await submitFeedbackForm();
     });
 
-    // TODO: เพิ่ม real-time validation สำหรับ input fields
-    // ใช้ addEventListener กับ 'input' event
-    const contactInputs = contactForm.querySelectorAll("input, textarea");
-    contactInputs.forEach((input) => {
-        input.addEventListener("input", (e) => {
-            const { isValid, message } = validateField(
-            e.target.name,
-            e.target.value
-        );
-
-    const errorElement = document.getElementById(`${e.target.name}Error`);
-    if (errorElement) {
-        errorElement.textContent = isValid ? "" : message;
-        errorElement.style.display = isValid ? "none" : "block";
-        }
-      });
+    // Real-time validation
+    const contactInputs = contactForm.querySelectorAll('input, textarea');
+    contactInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const { isValid, message } = validateField(input.name, input.value);
+            updateFieldStatus(input, isValid, message);
+        });
     });
 
-    const feedbackInputs = feedbackForm.querySelectorAll("input, textarea");
-    feedbackInputs.forEach((input) => {
-       input.addEventListener("input", (e) => {
-            const { isValid, message } = validateField(
-            e.target.name,
-            e.target.value
-        );
-    const errorElement = document.getElementById(`${e.target.name}Error`);
-    if (errorElement) {
-        errorElement.textContent = isValid ? "" : message;
-        errorElement.style.display = isValid ? "none" : "block";
-        }
-      });
+    const feedbackInputs = feedbackForm.querySelectorAll('input, textarea');
+    feedbackInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const { isValid, message } = validateField(input.name, input.value);
+            updateFieldStatus(input, isValid, message);
+        });
     });
-}   
 
-// TODO: สร้างฟังก์ชัน validateField สำหรับ client-side validation
+    // Theme toggle
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    });
+}
+
+// ฟังก์ชัน validateField
 function validateField(fieldName, value) {
-    // ตรวจสอบ field แต่ละประเภท
-    // return { isValid: boolean, message: string }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{9,10}$/;
-
     switch (fieldName) {
-        case "name":
-            if (!value) return { isValid: false, message: "Name is required" };
-            if (value.length < 2)
-                return {
-                    isValid: false,
-                    message: "Name must be at least 2 characters",
-                };
-            if (value.length > 100)
-                return {
-                    isValid: false,
-                    message: "Name must not exceed 100 characters",
-                };
-            return { isValid: true, message: "" };
+        case 'name':
+            if (!value) return { isValid: false, message: 'ต้องกรอกชื่อ' };
+            if (value.trim().length < 2) return { isValid: false, message: 'ชื่อต้องมีความยาวอย่างน้อย 2 ตัวอักษร' };
+            if (value.trim().length > 100) return { isValid: false, message: 'ชื่อต้องไม่เกิน 100 ตัวอักษร' };
+            return { isValid: true, message: '' };
 
-        case "email":
-            if (!value) return { isValid: false, message: "Email is required" };
-            if (!emailRegex.test(value))
-                return { isValid: false, message: "Invalid email format" };
-                return { isValid: true, message: "" };
+        case 'email':
+            if (!value && document.activeElement.id !== 'feedbackEmail') return { isValid: false, message: 'ต้องกรอกอีเมล' };
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (value && !emailRegex.test(value.trim())) return { isValid: false, message: 'รูปแบบอีเมลไม่ถูกต้อง' };
+            return { isValid: true, message: '' };
 
-        case "subject":
-            if (!value) return { isValid: false, message: "Subject is required" };
-            if (value.length < 5)
-                return {
-                    isValid: false,
-                    message: "Subject must be at least 5 characters",
-                };
-            if (value.length > 200)
-                return {
-                    isValid: false,
-                    message: "Subject must not exceed 200 characters",
-                };
-            return { isValid: true, message: "" }; 
+        case 'subject':
+            if (!value) return { isValid: false, message: 'ต้องกรอกหัวข้อ' };
+            if (value.trim().length < 5) return { isValid: false, message: 'หัวข้อต้องมีความยาวอย่างน้อย 5 ตัวอักษร' };
+            if (value.trim().length > 200) return { isValid: false, message: 'หัวข้อต้องไม่เกิน 200 ตัวอักษร' };
+            return { isValid: true, message: '' };
 
-        case "message":
-            if (!value) return { isValid: false, message: "Message is required" };
-            if (value.length < 10)
-                return {
-                    isValid: false,
-                    message: "Message must be at least 10 characters",
-                };
-            if (value.length > 1000)
-                return {
-                    isValid: false,
-                    message: "Message must not exceed 1000 characters",
-                };
-            return { isValid: true, message: "" };
+        case 'message':
+            if (!value) return { isValid: false, message: 'ต้องกรอกข้อความ' };
+            if (value.trim().length < 10) return { isValid: false, message: 'ข้อความต้องมีความยาวอย่างน้อย 10 ตัวอักษร' };
+            if (value.trim().length > 1000) return { isValid: false, message: 'ข้อความต้องไม่เกิน 1000 ตัวอักษร' };
+            return { isValid: true, message: '' };
 
-        case "phone":
-            if (value && !phoneRegex.test(value))
-                return {
-                    isValid: false,
-                    message: "Invalid phone number (9-10 digits)",
-                };
-        return { isValid: true, message: "" };
+        case 'phone':
+            if (!value) return { isValid: true, message: '' };
+            const phoneRegex = /^[0-9]{9,10}$/;
+            if (!phoneRegex.test(value.trim())) return { isValid: false, message: 'เบอร์โทรต้องเป็นตัวเลข 9-10 หลัก' };
+            return { isValid: true, message: '' };
 
-        case "company":
-            if (value && value.length > 100)
-                return {
-                    isValid: false,
-                    message: "Company must not exceed 100 characters",
-                };
-        return { isValid: true, message: "" };
+        case 'company':
+            if (!value) return { isValid: true, message: '' };
+            if (value.trim().length > 100) return { isValid: false, message: 'ชื่อบริษัทต้องไม่เกิน 100 ตัวอักษร' };
+            return { isValid: true, message: '' };
 
-        case "rating":
-        const rating = parseInt(value);
-            if (!value || isNaN(rating))
-                return { isValid: false, message: "Rating is required" };
-            if (rating < 1 || rating > 5)
-                return { isValid: false, message: "Rating must be between 1 and 5" };
-                return { isValid: true, message: "" };
+        case 'rating':
+            const rateNum = parseInt(value);
+            if (!value) return { isValid: false, message: 'ต้องเลือกคะแนน' };
+            if (isNaN(rateNum) || rateNum < 1 || rateNum > 5) return { isValid: false, message: 'คะแนนต้องอยู่ระหว่าง 1-5' };
+            return { isValid: true, message: '' };
 
-        case "comment":
-            if (!value) return { isValid: false, message: "Comment is required" };
-            if (value.length < 5)
-                return {
-                    isValid: false,
-                    message: "Comment must be at least 5 characters",
-                };
-            if (value.length > 500)
-                return {
-                    isValid: false,
-                    message: "Comment must not exceed 500 characters",
-                };
-            return { isValid: true, message: "" };
+        case 'comment':
+            if (!value) return { isValid: false, message: 'ต้องกรอกความคิดเห็น' };
+            if (value.trim().length < 5) return { isValid: false, message: 'ความคิดเห็นต้องมีความยาวอย่างน้อย 5 ตัวอักษร' };
+            if (value.trim().length > 500) return { isValid: false, message: 'ความคิดเห็นต้องไม่เกิน 500 ตัวอักษร' };
+            return { isValid: true, message: '' };
 
         default:
-            return { isValid: true, message: "" };
+            return { isValid: true, message: '' };
     }
+}
+
+// อัปเดตสถานะ field
+function updateFieldStatus(input, isValid, message) {
+    const errorDiv = document.getElementById(`${input.id}Error`);
+    errorDiv.textContent = message;
+    errorDiv.style.color = isValid ? '' : 'var(--error-color)';
+    input.style.borderColor = isValid ? '' : 'var(--input-invalid-border)';
+    input.classList.remove(isValid ? 'invalid' : 'valid');
+    input.classList.add(isValid ? 'valid' : 'invalid');
 }
 
 async function submitContactForm() {
@@ -174,15 +143,23 @@ async function submitContactForm() {
     const formData = new FormData(contactForm);
     const data = Object.fromEntries(formData.entries());
     
+    // ตรวจสอบ client-side validation
+    for (const [key, value] of Object.entries(data)) {
+        const { isValid, message } = validateField(key, value);
+        if (!isValid) {
+            showStatusMessage(`🔸 ${message}`, 'error');
+            updateFieldStatus(document.getElementsByName(key)[0], isValid, message);
+            return;
+        }
+    }
+    
     try {
         isSubmitting = true;
         updateSubmitButton('contactSubmit', 'กำลังส่ง...', true);
         
         const response = await fetch('/api/contact', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
         
@@ -191,6 +168,11 @@ async function submitContactForm() {
         if (result.success) {
             showStatusMessage('✅ ส่งข้อความสำเร็จ! เราจะติดต่อกลับโดยเร็ว', 'success');
             contactForm.reset();
+            contactForm.querySelectorAll('.error').forEach(div => div.textContent = '');
+            contactForm.querySelectorAll('input, textarea').forEach(input => {
+                input.classList.remove('valid', 'invalid');
+                input.style.borderColor = '';
+            });
         } else {
             showStatusMessage(`❌ เกิดข้อผิดพลาด: ${result.message}`, 'error');
             if (result.errors) {
@@ -213,37 +195,43 @@ async function submitFeedbackForm() {
     const data = Object.fromEntries(formData.entries());
     data.rating = parseInt(data.rating);
     
+    // ตรวจสอบ client-side validation
+    for (const [key, value] of Object.entries(data)) {
+        const { isValid, message } = validateField(key, value);
+        if (!isValid) {
+            showStatusMessage(`🔸 ${message}`, 'error');
+            updateFieldStatus(document.getElementsByName(key)[0], isValid, message);
+            return;
+        }
+    }
+    
     try {
         isSubmitting = true;
         updateSubmitButton('feedbackSubmit', 'กำลังส่ง...', true);
         
-        // TODO: ส่งข้อมูลไปยัง /api/feedback endpoint
-        // ใช้ fetch API
-    const response = await fetch("/api/feedback", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });       
+        const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
         
-        // TODO: จัดการ response และแสดงผลลัพธ์
-    const result = await response.json();
-
-    if (result.success) {
-        showStatusMessage(
-            "✅ ส่งความคิดเห็นสำเร็จ! ขอบคุณสำหรับความคิดเห็น",
-            "success"
-        );
-        feedbackForm.reset();
-        ratingValue.textContent = "3"; // Reset rating display
-    } else {
-        showStatusMessage(`❌ เกิดข้อผิดพลาด: ${result.message}`, "error");
-    if (result.errors) {
-        displayValidationErrors(result.errors);
-      }
-    }
+        const result = await response.json();
         
+        if (result.success) {
+            showStatusMessage('✅ ส่งความคิดเห็นสำเร็จ! ขอบคุณสำหรับความคิดเห็น', 'success');
+            feedbackForm.reset();
+            ratingValue.textContent = '3';
+            feedbackForm.querySelectorAll('.error').forEach(div => div.textContent = '');
+            feedbackForm.querySelectorAll('input, textarea').forEach(input => {
+                input.classList.remove('valid', 'invalid');
+                input.style.borderColor = '';
+            });
+        } else {
+            showStatusMessage(`❌ เกิดข้อผิดพลาด: ${result.message}`, 'error');
+            if (result.errors) {
+                displayValidationErrors(result.errors);
+            }
+        }
     } catch (error) {
         showStatusMessage('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
         console.error('Error:', error);
@@ -281,65 +269,82 @@ function displayValidationErrors(errors) {
 // API Testing Functions
 async function loadContacts() {
     try {
-        // TODO: เรียก GET /api/contact และแสดงผลลัพธ์
-        apiResults.textContent = 'Loading contacts...';
-        const response = await fetch("/api/contact?page=1&limit=10");
+        apiResults.textContent = 'กำลังโหลดข้อมูลติดต่อ...';
+        const response = await fetch('/api/contact');
         const result = await response.json();
-    
-    if (result.success) {
-        apiResults.textContent = JSON.stringify(result.data, null, 2);
-    } else {
-        apiResults.textContent = `Error: ${result.message}`;
-    }
-
+        
+        if (result.success) {
+            apiResults.innerHTML = `
+                <h3>ข้อมูลติดต่อ</h3>
+                <p>จำนวนทั้งหมด: ${result.pagination.totalItems}</p>
+                <p>หน้า: ${result.pagination.currentPage}/${result.pagination.totalPages}</p>
+                <pre>${JSON.stringify(result.data, null, 2)}</pre>
+            `;
+        } else {
+            apiResults.textContent = `เกิดข้อผิดพลาด: ${result.message}`;
+        }
     } catch (error) {
-        apiResults.textContent = 'Error loading contacts: ' + error.message;
+        apiResults.textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูลติดต่อ: ' + error.message;
     }
 }
 
 async function loadFeedbackStats() {
     try {
-        // TODO: เรียก GET /api/feedback/stats และแสดงผลลัพธ์
-        apiResults.textContent = 'Loading feedback stats...';
-        const response = await fetch("/api/feedback/stats");
+        apiResults.textContent = 'กำลังโหลดสถิติความคิดเห็น...';
+        const response = await fetch('/api/feedback/stats');
         const result = await response.json();
-
-    if (result.success) {
-        apiResults.textContent = JSON.stringify(result.stats, null, 2);
-    } else {
-        apiResults.textContent = `Error: ${result.message}`;
-    }
         
+        if (result.success) {
+            apiResults.innerHTML = `
+                <h3>สถิติความคิดเห็น</h3>
+                <p>จำนวนความคิดเห็นทั้งหมด: ${result.stats.totalFeedback}</p>
+                <p>การกระจายคะแนน:</p>
+                <ul>
+                    <li>5 ดาว: ${result.stats.ratingDistribution[5]}</li>
+                    <li>4 ดาว: ${result.stats.ratingDistribution[4]}</li>
+                    <li>3 ดาว: ${result.stats.ratingDistribution[3]}</li>
+                    <li>2 ดาว: ${result.stats.ratingDistribution[2]}</li>
+                    <li>1 ดาว: ${result.stats.ratingDistribution[1]}</li>
+                </ul>
+            `;
+        } else {
+            apiResults.textContent = `เกิดข้อผิดพลาด: ${result.message}`;
+        }
     } catch (error) {
-        apiResults.textContent = 'Error loading feedback stats: ' + error.message;
+        apiResults.textContent = 'เกิดข้อผิดพลาดในการโหลดสถิติความคิดเห็น: ' + error.message;
     }
 }
 
 async function loadAPIStatus() {
     try {
-        // TODO: เรียก GET /api/status และแสดงผลลัพธ์
-        apiResults.textContent = 'Loading API status...';
-        const response = await fetch("/api/status");
+        apiResults.textContent = 'กำลังโหลดสถานะ API...';
+        const response = await fetch('/api/status');
         const result = await response.json();
-
-    if (result.success) {
-        apiResults.textContent = JSON.stringify(result, null, 2);
-    } else {
-        apiResults.textContent = `Error: ${result.message}`;
-    }
-
+        
+        if (result.success) {
+            apiResults.innerHTML = `
+                <h3>สถานะ API</h3>
+                <pre>${JSON.stringify(result, null, 2)}</pre>
+            `;
+        } else {
+            apiResults.textContent = `เกิดข้อผิดพลาด: ${result.message}`;
+        }
     } catch (error) {
-        apiResults.textContent = 'Error loading API status: ' + error.message;
+        apiResults.textContent = 'เกิดข้อผิดพลาดในการโหลดสถานะ API: ' + error.message;
     }
 }
 
 async function loadAPIDocs() {
     try {
-        apiResults.textContent = "Loading API docs...";
+        apiResults.textContent = 'กำลังโหลดเอกสาร API...';
         const response = await fetch('/api/docs');
-        const data = await response.json();
-        apiResults.textContent = JSON.stringify(data, null, 2);
+        const result = await response.json();
+        
+        apiResults.innerHTML = `
+            <h3>เอกสาร API</h3>
+            <pre>${JSON.stringify(result, null, 2)}</pre>
+        `;
     } catch (error) {
-        apiResults.textContent = 'Error loading API docs: ' + error.message;
+        apiResults.textContent = 'เกิดข้อผิดพลาดในการโหลดเอกสาร API: ' + error.message;
     }
 }

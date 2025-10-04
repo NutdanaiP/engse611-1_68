@@ -1,75 +1,65 @@
 const express = require('express');
 const router = express.Router();
-
 const { validateContact } = require('../middleware/validation');
 const { appendToJsonFile, readJsonFile } = require('../middleware/fileManager');
 
-// ชื่อไฟล์เก็บข้อมูล
-const CONTACTS_FILE = 'contacts.json';
-
- // POST /api/contact
- // รับข้อมูลจากฟอร์ม
- // ตรวจสอบด้วย validateContact
- // บันทึกลงไฟล์ contacts.json
+// POST /api/contact - บันทึกข้อมูลติดต่อ
 router.post('/', validateContact, async (req, res) => {
     try {
-        const newContact = await appendToJsonFile('contacts.json', req.body);
-        
-        if (!newContact) {
-            return res.status(500).json({
+        const result = await appendToJsonFile('contacts.json', req.body);
+        if (result) {
+            res.status(201).json({
+                success: true,
+                message: 'บันทึกข้อมูลติดต่อสำเร็จ',
+                data: result
+            });
+        } else {
+            res.status(500).json({
                 success: false,
-                message: 'Failed to save contact data'
+                message: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล'
             });
         }
-        
-        res.status(201).json({
-            success: true,
-            message: 'Contact data saved successfully',
-            data: newContact
-        });
-
     } catch (error) {
-        console.error('Error saving contact:', error);
+        console.error('เกิดข้อผิดพลาดใน POST /api/contact:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์'
         });
     }
 });
 
- // GET /api/contact
- // ดึงข้อมูลทั้งหมด
- // รองรับ pagination (page, limit)
+// GET /api/contact - ดึงข้อมูลติดต่อทั้งหมด (พร้อม pagination)
 router.get('/', async (req, res) => {
     try {
         const contacts = await readJsonFile('contacts.json');
         
+        // Pagination parameters
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        const totalItems = Array.isArray(contacts) ? contacts.length : 0;
+        // คำนวณข้อมูลสำหรับหน้า
+        const totalItems = contacts.length;
         const totalPages = Math.ceil(totalItems / limit);
-
         const paginatedContacts = contacts.slice(startIndex, endIndex);
 
         res.json({
             success: true,
-            message: 'Contacts retrieved successfully',
+            message: 'ดึงข้อมูลติดต่อสำเร็จ',
             data: paginatedContacts,
             pagination: {
                 currentPage: page,
-                itemsPerPage: limit,
+                totalPages: totalPages,
                 totalItems: totalItems,
-                totalPages: totalPages
+                limit: limit
             }
         });
     } catch (error) {
-        console.error('Error retrieving contacts:', error);
+        console.error('เกิดข้อผิดพลาดใน GET /api/contact:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'เกิดข้อผิดพลาดในการดึงข้อมูล'
         });
     }
 });

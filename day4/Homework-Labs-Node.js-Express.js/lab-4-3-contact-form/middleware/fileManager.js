@@ -20,11 +20,11 @@ const readJsonFile = async (filename) => {
         const data = await fs.readFile(filePath, 'utf8');
         return JSON.parse(data);
     } catch (error) {
+        // ถ้าไฟล์ไม่มี ให้ return array ว่าง
         if (error.code === 'ENOENT') {
-            // TODO: ถ้าไฟล์ไม่มี ให้ return array ว่าง []
             return [];
         }
-        console.error('Error reading file:', error);
+        console.error('เกิดข้อผิดพลาดในการอ่านไฟล์:', error);
         return [];
     }
 };
@@ -37,7 +37,7 @@ const writeJsonFile = async (filename, data) => {
         await fs.writeFile(filePath, JSON.stringify(data, null, 2));
         return true;
     } catch (error) {
-        console.error('Error writing file:', error);
+        console.error('เกิดข้อผิดพลาดในการเขียนไฟล์:', error);
         return false;
     }
 };
@@ -47,32 +47,23 @@ const appendToJsonFile = async (filename, newData) => {
     try {
         const existingData = await readJsonFile(filename);
         
-        // ID จาก timestamp เพื่อป้องกันการซ้ำ
-        const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-        // timestamp ในเขตเวลา GMT+7
-        const date = new Date();
-        const offset = 7 * 60; // GMT+7 ในหน่วยนาที
-        const localDate = new Date(date.getTime() + offset * 60 * 1000);
-        const createdAt = localDate.toISOString().replace();
-
-        // TODO: เพิ่ม ID และ timestamp ให้ข้อมูลใหม่
+        // เพิ่ม ID และ timestamp ให้ข้อมูลใหม่
         const dataWithId = {
-            id: uniqueId,
+            id: Date.now(), // ใช้ timestamp ปัจจุบันเป็น ID
             ...newData,
-            createdAt: createdAt
+            createdAt: new Date().toISOString() // เพิ่ม timestamp ในรูปแบบ ISO
         };
         
         existingData.push(dataWithId);
         await writeJsonFile(filename, existingData);
         return dataWithId;
     } catch (error) {
-        console.error('Error appending to file:', error);
+        console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลลงไฟล์:', error);
         return null;
     }
 };
 
-// TODO: สร้างฟังก์ชัน getFileStats
+// สร้างฟังก์ชัน getFileStats
 // ส่งกลับจำนวนข้อมูลในแต่ละไฟล์
 const getFileStats = async () => {
     try {
@@ -80,18 +71,14 @@ const getFileStats = async () => {
         const feedback = await readJsonFile('feedback.json');
         
         return {
-            success: true,
-            stats: {
-                contactsCount: Array.isArray(contacts) ? contacts.length : 0,
-                feedbackCount: Array.isArray(feedback) ? feedback.length : 0
-            }
+            contacts: contacts.length,
+            feedback: feedback.length
         };
-        
     } catch (error) {
-        console.error('Error getting file stats:', error);
+        console.error('เกิดข้อผิดพลาดในการดึงสถิติไฟล์:', error);
         return {
-            success: false,
-            message: 'Error retrieving file statistics'
+            contacts: 0,
+            feedback: 0
         };
     }
 };
@@ -100,5 +87,5 @@ module.exports = {
     readJsonFile,
     writeJsonFile,
     appendToJsonFile,
-    getFileStats
+    getFileStats // export ฟังก์ชันใหม่
 };
