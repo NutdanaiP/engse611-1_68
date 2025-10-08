@@ -11,32 +11,43 @@ router.get('/', async (req, res) => {
     const { search, category, minRating, priceRange } = req.query;
     
     // TODO 1: กรองตามชื่อ (search)
-    // เงื่อนไข: ถ้ามี search parameter ให้กรองร้านที่มีชื่อหรือคำอธิบายที่ตรงกับคำค้นหา
-    // คำใบ้:
-    // if (search) {
-    //   const searchLower = search.toLowerCase();
-    //   restaurants = restaurants.filter(r => 
-    //     r.name.toLowerCase().includes(searchLower) ||
-    //     r.description.toLowerCase().includes(searchLower)
-    //   );
-    // }
-    
+    if (search) {
+      const searchLower = String(search).toLowerCase();
+      restaurants = restaurants.filter(r =>
+        (r.name && r.name.toLowerCase().includes(searchLower)) ||
+        (r.description && r.description.toLowerCase().includes(searchLower))
+      );
+    }
+
     // TODO 2: กรองตามหมวดหมู่ (category)
-    // เงื่อนไข: ถ้ามี category parameter ให้กรองร้านที่มีหมวดหมู่ตรงกัน
-    
+    if (category) {
+      const cat = String(category).toLowerCase();
+      restaurants = restaurants.filter(r => r.category && r.category.toLowerCase() === cat);
+    }
+
     // TODO 3: กรองตาม rating ขั้นต่ำ (minRating)
-    // เงื่อนไข: ถ้ามี minRating parameter ให้กรองร้านที่มี averageRating >= minRating
-    // คำใบ้: ใช้ parseFloat() เพื่อแปลงเป็นตัวเลข
-    
+    if (minRating) {
+      const min = parseFloat(minRating);
+      if (!isNaN(min)) {
+        restaurants = restaurants.filter(r => (parseFloat(r.averageRating) || 0) >= min);
+      }
+    }
+
     // TODO 4: กรองตามช่วงราคา (priceRange)
-    // เงื่อนไข: ถ้ามี priceRange parameter ให้กรองร้านที่มี priceRange ตรงกัน
-    // คำใบ้: ใช้ parseInt() เพื่อแปลงเป็นตัวเลข
+    if (priceRange) {
+      const pr = parseInt(priceRange, 10);
+      if (!isNaN(pr)) {
+        restaurants = restaurants.filter(r => parseInt(r.priceRange, 10) === pr);
+      }
+    }
     
+    // ตอบกลับผลลัพธ์ของการค้นหา/กรอง
+    // รูปแบบการตอบกลับ
     res.json({
       success: true,
-      data: restaurants,
-      total: restaurants.length,
-      filters: {
+      data: restaurants,                   // อาเรย์ร้านที่ผ่านการกรอง
+      total: restaurants.length,           // จำนวนรายการที่ตอบกลับ
+      filters: {                           // ค่าพารามิเตอร์ที่ใช้กรอง (หรือ null) คอมเมนต์นี้ช่วยให้ frontend รู้ว่าจะได้รับข้อมูลอะไรเพื่อนำไปแสดงหรือทำ paging/summary
         search: search || null,
         category: category || null,
         minRating: minRating || null,
@@ -59,24 +70,28 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    // TODO 5: อ่านข้อมูลร้านและรีวิว
-    // ขั้นตอน:
-    // 1. อ่าน restaurants.json และ reviews.json โดยใช้ readJsonFile
-    // 2. หาร้านที่มี id ตรงกับ parameter โดยใช้ Array.find()
-    //    const restaurant = restaurants.find(r => r.id === parseInt(id));
-    // 3. ถ้าไม่เจอร้าน ให้ return status 404 พร้อมข้อความ 'ไม่พบร้านอาหารนี้'
-    // 4. หารีวิวของร้านนี้ โดยใช้ Array.filter()
-    //    const restaurantReviews = reviews.filter(r => r.restaurantId === parseInt(id));
-    // 5. เรียงรีวิวจากใหม่สุดไปเก่าสุด โดยใช้ createdAt
-    //    restaurantReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    // 6. ส่งข้อมูลกลับในรูปแบบ:
-    //    res.json({
-    //      success: true,
-    //      data: {
-    //        ...restaurant,
-    //        reviews: restaurantReviews
-    //      }
-    //    });
+    // อ่านไฟล์ restaurants และ reviews
+    const restaurants = await readJsonFile('restaurants.json');
+    const reviews = await readJsonFile('reviews.json');
+
+    const restaurant = (restaurants || []).find(r => String(r.id) === String(id) || r.id === parseInt(id, 10));
+    if (!restaurant) {
+      return res.status(404).json({ success: false, message: 'ไม่พบร้านอาหารนี้' });
+    }
+
+    const restaurantId = parseInt(id, 10);
+    const restaurantReviews = (reviews || []).filter(rv => parseInt(rv.restaurantId, 10) === restaurantId);
+
+    // เรียงรีวิวจากใหม่สุดไปหาเก่าสุด
+    restaurantReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json({
+      success: true,
+      data: {
+        ...restaurant,
+        reviews: restaurantReviews
+      }
+    });
     
   } catch (error) {
     console.error('Error fetching restaurant:', error);
