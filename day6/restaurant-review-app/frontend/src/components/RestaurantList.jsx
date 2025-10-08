@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import FilterPanel from './FilterPanel';
 import { getRestaurants } from '../services/api';
 
-function RestaurantList({ onSelectRestaurant }) {
+function RestaurantList({ onSelectRestaurant, theme, onToggleTheme }) {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -75,7 +75,12 @@ function RestaurantList({ onSelectRestaurant }) {
   return (
     <div className="restaurant-list-container">
       <SearchBar onSearch={handleSearch} />
-      <FilterPanel onFilterChange={handleFilterChange} filters={filters} />
+      <FilterPanel 
+        onFilterChange={handleFilterChange} 
+        filters={filters} 
+        theme={theme}
+        onToggleTheme={onToggleTheme}
+      />
       
       {loading && <div className="loading">กำลังโหลด...</div>}
       {error && <div className="error">{error}</div>}

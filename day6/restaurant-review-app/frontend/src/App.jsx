@@ -64,11 +64,6 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        {/* ปุ่มสลับธีม - แสดงไอคอน 🌙 Dark / ☀️ Light */}
-        <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-          {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
-        </button>
-
         <h1>🍜 Restaurant Review</h1>
         <p>ค้นหาและรีวิวร้านอาหารโปรดของคุณ</p>
       </header>
@@ -82,6 +77,8 @@ function App() {
         ) : (
           <RestaurantList 
             onSelectRestaurant={handleSelectRestaurant}
+            theme={theme}
+            onToggleTheme={toggleTheme}
           />
         )}
       </main>

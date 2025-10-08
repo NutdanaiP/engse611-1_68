@@ -7,7 +7,7 @@
     "location": "ตลาดนัดสวนจตุจักร",
     "priceRange": 1,
     "phone": "02-123-4567",
-    "image": "https://images.unsplash.com/photo-1559847844-5315695dadae?w=800",
+    "image": "https://media.istockphoto.com/id/478186916/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%A2%E0%B9%8D%E0%B8%B2%E0%B8%A1%E0%B8%B0%E0%B8%A5%E0%B8%B0%E0%B8%81%E0%B8%AD%E0%B8%AA%E0%B9%84%E0%B8%95%E0%B8%A5%E0%B9%8C%E0%B9%84%E0%B8%97%E0%B8%A2.jpg?b=1&s=612x612&w=0&k=20&c=9EVLtegsYc1rgvAm18qG2Ti4S67V_l0NwM8tuVBbJxY=",
     "averageRating": 0,
     "totalReviews": 0,
     "openHours": "10:00-20:00",
@@ -138,5 +138,33 @@
     "totalReviews": 0,
     "openHours": "09:00-16:00",
     "createdAt": "2024-01-28T10:00:00.000Z"
+  },
+  {
+    "id": 11,
+    "name": "ราเมนฮิโระชิ",
+    "category": "อาหารญี่ปุ่น",
+    "description": "ราเมนต้นตำรับจากฮอกไกโด น้ำซุปเข้มข้น หมูชาชูหนา เส้นแป้งทำเอง บรรยากาศแบบญี่ปุ่นแท้",
+    "location": "เอกมัย ซอย 2",
+    "priceRange": 2,
+    "phone": "02-345-6789",
+    "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "openHours": "11:30-21:30",
+    "createdAt": "2024-02-01T10:00:00.000Z"
+  },
+  {
+    "id": 12,
+    "name": "นาโปลี พิซซ่า",
+    "category": "อาหารอิตาเลียน",
+    "description": "พิซซ่านาโปลีแท้ เตาอิฐแบบดั้งเดิม เชฟจากอิตาลี วัตถุดิบนำเข้า มอสซาเรลล่าสด ใส่ใจทุกรายละเอียด",
+    "location": "สุขุมวิท 39",
+    "priceRange": 3,
+    "phone": "02-456-7890",
+    "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "openHours": "11:00-22:00",
+    "createdAt": "2024-02-02T10:00:00.000Z"
   }
 ]

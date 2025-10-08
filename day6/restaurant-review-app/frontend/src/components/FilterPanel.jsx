@@ -1,4 +1,4 @@
-function FilterPanel({ onFilterChange, filters }) {
+function FilterPanel({ onFilterChange, filters, theme, onToggleTheme }) {
   const categories = [
     'ทั้งหมด', 
     'อาหารไทย', 
@@ -55,8 +55,7 @@ function FilterPanel({ onFilterChange, filters }) {
         </select>
       </div>
 
-      {/* Sort group - เรียงลำดับผลลัพธ์ */}
-      <div className="filter-group sort-group">
+      <div className="filter-group">
         <label>เรียงตาม:</label>
         <select
           value={filters.sort || ''}
@@ -70,9 +69,6 @@ function FilterPanel({ onFilterChange, filters }) {
         </select>
       </div>
 
-      {/* ========================================
-          TODO 3: เพิ่ม filter สำหรับ minRating
-          ======================================== */}
       <div className="filter-group">
         <label>คะแนนขั้นต่ำ:</label>
         <select 
@@ -86,9 +82,6 @@ function FilterPanel({ onFilterChange, filters }) {
         </select>
       </div>
 
-      {/* ========================================
-          TODO 4: เพิ่ม filter สำหรับ priceRange
-          ======================================== */}
       <div className="filter-group">
         <label>ช่วงราคา:</label>
         <select 
@@ -100,6 +93,12 @@ function FilterPanel({ onFilterChange, filters }) {
           <option value="2">฿฿ (100-300)</option>
           <option value="3">฿฿฿ (มากกว่า 300)</option>
         </select>
+      </div>
+
+      <div className="filter-group theme-group">
+        <button className="theme-toggle-filter" onClick={onToggleTheme} aria-label="Toggle theme">
+          {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+        </button>
       </div>
     </div>
   );
