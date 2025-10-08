@@ -17,13 +17,16 @@ function RestaurantDetail({ restaurantId, onBack }) {
       setLoading(true);
       setError(null);
       
-      // TODO 1: เรียก getRestaurantById
-      // const result = await getRestaurantById(restaurantId);
-      
-      // TODO 2: ตั้งค่า state
-      // if (result.success) {
-      //   setRestaurant(result.data);
-      // }
+      // เรียก api getRestaurantById เพื่อดึงรายละเอียดร้านพร้อมรีวิว
+      const result = await getRestaurantById(restaurantId);
+
+      // ตั้งค่า state ตามผลลัพธ์
+      if (result && result.success) {
+        setRestaurant(result.data);
+      } else {
+        setRestaurant(null);
+        setError((result && result.message) || 'ไม่พบข้อมูลร้าน');
+      }
       
     } catch (err) {
       setError('ไม่สามารถโหลดข้อมูลร้านได้');

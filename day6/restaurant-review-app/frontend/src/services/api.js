@@ -7,28 +7,35 @@ const API_URL = 'http://localhost:3000/api';
  */
 export const getRestaurants = async (filters = {}) => {
   try {
-    // TODO 1: สร้าง query string จาก filters
-    // คำใบ้:
-    // const queryParams = new URLSearchParams();
-    // if (filters.search) queryParams.append('search', filters.search);
-    // if (filters.category) queryParams.append('category', filters.category);
-    // if (filters.minRating) queryParams.append('minRating', filters.minRating);
-    // if (filters.priceRange) queryParams.append('priceRange', filters.priceRange);
-    
-    // TODO 2: สร้าง URL พร้อม query string
-    // const url = `${API_URL}/restaurants?${queryParams}`;
+    // สร้าง query string จาก filters
+    const queryParams = new URLSearchParams();
+    if (filters.search !== undefined && filters.search !== null && String(filters.search).trim() !== '') {
+      queryParams.append('search', String(filters.search).trim());
+    }
+    if (filters.category !== undefined && filters.category !== null && String(filters.category).trim() !== '') {
+      queryParams.append('category', String(filters.category).trim());
+    }
+    if (filters.minRating !== undefined && filters.minRating !== null && String(filters.minRating).trim() !== '') {
+      queryParams.append('minRating', String(filters.minRating));
+    }
+    if (filters.priceRange !== undefined && filters.priceRange !== null && String(filters.priceRange).trim() !== '') {
+      queryParams.append('priceRange', String(filters.priceRange));
+    }
 
-    // TODO 3: fetch ข้อมูล
-    // const response = await fetch(url);
-    
-    // TODO 4: ตรวจสอบ response
-    // if (!response.ok) {
-    //   throw new Error('Failed to fetch restaurants');
-    // }
-    
-    // TODO 5: แปลง response เป็น JSON และ return
-    // return await response.json();
-    
+    // สร้าง URL พร้อม query string
+    const queryString = queryParams.toString();
+    const url = `${API_URL}/restaurants${queryString ? `?${queryString}` : ''}`;
+
+    // fetch ข้อมูล
+    const response = await fetch(url);
+
+    // ตรวจสอบ response
+    if (!response.ok) {
+      throw new Error('Failed to fetch restaurants');
+    }
+
+    // แปลง response เป็น JSON และ return
+    return await response.json();
   } catch (error) {
     console.error('API Error:', error);
     throw error;
@@ -42,11 +49,15 @@ export const getRestaurants = async (filters = {}) => {
  */
 export const getRestaurantById = async (id) => {
   try {
-    // TODO 6: เติมโค้ดตามตัวอย่าง getRestaurants
-    // ใช้ endpoint: `${API_URL}/restaurants/${id}`
-    // ตรวจสอบ response.ok
-    // return ข้อมูล JSON
-    
+    // เติมโค้ดตามตัวอย่าง getRestaurants
+    if (id === undefined || id === null) throw new Error('Missing id');
+    const url = `${API_URL}/restaurants/${encodeURIComponent(id)}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      const err = await response.json().catch(() => null);
+      throw new Error((err && err.message) || 'Failed to fetch restaurant');
+    }
+    return await response.json();
   } catch (error) {
     console.error('API Error:', error);
     throw error;
@@ -60,24 +71,22 @@ export const getRestaurantById = async (id) => {
  */
 export const addReview = async (reviewData) => {
   try {
-    // TODO 7: เขียน POST request
-    // const response = await fetch(`${API_URL}/reviews`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(reviewData)
-    // });
-    
-    // TODO 8: ตรวจสอบ response
-    // if (!response.ok) {
-    //   const errorData = await response.json();
-    //   throw new Error(errorData.message || 'Failed to add review');
-    // }
-    
-    // TODO 9: return ข้อมูล JSON
-    // return await response.json();
-    
+    // เขียน POST request
+    const response = await fetch(`${API_URL}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reviewData)
+    });
+    // ตรวจสอบ response
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      const message = (errorData && (errorData.message || (errorData.errors && errorData.errors.join(', ')))) || 'Failed to add review';
+      throw new Error(message);
+    }
+    // return ข้อมูล JSON
+    return await response.json();
   } catch (error) {
     console.error('API Error:', error);
     throw error;
