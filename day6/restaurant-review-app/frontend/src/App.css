@@ -4,11 +4,67 @@
   box-sizing: border-box;
 }
 
+/* Theme variables: default = light */
+:root {
+  --bg: #f5f5f5;
+  --card-bg: #ffffff;
+  --text: #333333;
+  --muted: #666666;
+  --primary: #667eea;
+  --accent: #764ba2;
+  --border: #eeeeee;
+  --success: #10b981;
+  --warning: #f59e0b;
+}
+
+/* Dark theme: ใช้ด้วยการเพิ่ม class .theme-dark ไปยัง :root */
+:root.theme-dark {
+  --bg: #0b1220;
+  --card-bg: #0f1724;
+  --text: #e6eef8;
+  --muted: #9aa6b2;
+  --primary: #4f46e5;
+  --accent: #8b5cf6;
+  --border: #1f2937;
+  --success: #34d399;
+  --warning: #f59e0b;
+}
+
+html {
+  background: var(--bg);
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f5f5f5;
-  color: #333;
+  background: var(--bg);
+  color: var(--text);
   line-height: 1.6;
+  min-height: 100vh;
+}
+
+#root {
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+/* ทำให้การสลับธีมดูนุ่มนวลขึ้นโดยใส่ transition ให้ element หลัก */
+html,
+body,
+#root,
+.app,
+.app-header,
+.app-main,
+.filter-panel,
+.restaurant-card,
+.card-content h3,
+.back-button,
+.review-form,
+.review-item,
+.search-input,
+.search-button,
+.clear-button,
+.app-footer {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .app {
@@ -19,11 +75,32 @@ body {
 
 /* Header */
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   color: white;
   padding: 2rem;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* ปุ่มสลับธีม ใน header */
+.theme-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
 }
 
 .app-header h1 {
@@ -47,11 +124,12 @@ body {
 
 /* Footer */
 .app-footer {
-  background: #333;
-  color: white;
+  background: var(--card-bg);
+  color: var(--muted);
   text-align: center;
   padding: 1rem;
   margin-top: 2rem;
+  border-top: 1px solid var(--border);
 }
 
 /* Search Bar */
@@ -69,15 +147,17 @@ body {
 .search-input {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -86,7 +166,7 @@ body {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: #e5e7eb;
+  background: var(--border);
   border: none;
   border-radius: 50%;
   width: 24px;
@@ -95,19 +175,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--muted);
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 .clear-button:hover {
-  background: #d1d5db;
-  color: #333;
+  background: var(--muted);
+  color: var(--text);
 }
 
 .search-button {
   padding: 0.75rem 1.5rem;
-  background: #667eea;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -119,7 +199,7 @@ body {
 }
 
 .search-button:hover {
-  background: #5568d3;
+  background: color-mix(in srgb, var(--primary) 80%, black 20%);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
@@ -134,7 +214,7 @@ body {
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1rem;
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   flex-wrap: wrap;
@@ -146,8 +226,10 @@ body {
 }
 .sort-select {
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text);
 }
 .clear-filters-btn {
   padding: 0.5rem 0.75rem;
@@ -172,21 +254,23 @@ body {
 
 .filter-group label {
   font-weight: 600;
-  color: #555;
+  color: var(--text);
 }
 
 .filter-group select {
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 0.95rem;
   cursor: pointer;
   transition: border-color 0.3s ease;
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 /* Restaurant Grid */
@@ -198,7 +282,7 @@ body {
 
 /* Restaurant Card */
 .restaurant-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -224,24 +308,24 @@ body {
 .card-content h3 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: var(--text);
 }
 
 /* เพิ่ม effect ให้ hovers บนชื่อเพื่อความพรีเมียมเล็กน้อย */
 .card-content h3:hover {
-  color: #222;
+  color: var(--text);
   text-decoration: underline;
 }
 
 .category {
-  color: #667eea;
+  color: var(--primary);
   font-weight: 600;
   margin-bottom: 0.5rem;
   display: inline-block;
 }
 
 .description {
-  color: #666;
+  color: var(--muted);
   font-size: 0.9rem;
   margin-bottom: 1rem;
   display: -webkit-box;
@@ -258,11 +342,11 @@ body {
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border);
 }
 
 .rating {
-  color: #f59e0b;
+  color: var(--warning);
   font-weight: 600;
 }
 
@@ -275,18 +359,18 @@ body {
 }
 
 .price {
-  color: #10b981;
+  color: var(--success);
   font-weight: 600;
 }
 
 .reviews {
-  color: #666;
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
 /* Restaurant Detail */
 .restaurant-detail {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -294,7 +378,7 @@ body {
 
 .back-button {
   padding: 0.5rem 1rem;
-  background: #667eea;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -304,7 +388,7 @@ body {
 }
 
 .back-button:hover {
-  background: #5568d3;
+  background: color-mix(in srgb, var(--primary) 80%, black 20%);
 }
 
 .detail-header {
@@ -324,6 +408,7 @@ body {
 .detail-info h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
+  color: var(--text);
 }
 
 .info-row {
@@ -331,7 +416,7 @@ body {
   flex-direction: column;
   gap: 0.5rem;
   margin: 1rem 0;
-  color: #666;
+  color: var(--muted);
 }
 
 .rating-info {
