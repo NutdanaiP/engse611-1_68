@@ -4,6 +4,8 @@ function RestaurantCard({ restaurant, onClick }) {
   };
 
   return (
+    // คอมโพเนนต์การ์ดของร้าน
+    // - รับ prop restaurant (object) และ onClick เพื่อบอก parent ว่าเลือกร้านใด
     <div className="restaurant-card" onClick={() => onClick(restaurant.id)}>
       <img src={restaurant.image} alt={restaurant.name} />
       <div className="card-content">

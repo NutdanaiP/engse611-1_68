@@ -12,7 +12,8 @@ function RestaurantList({ onSelectRestaurant }) {
     search: '',
     category: '',
     minRating: '',
-    priceRange: ''
+    priceRange: '',
+    sort: '' // '' | 'rating' | 'name' | 'reviews'
   });
 
   // 1. useEffect เพื่อ fetch ข้อมูลเมื่อ filters เปลี่ยน
@@ -26,10 +27,27 @@ function RestaurantList({ onSelectRestaurant }) {
       setError(null);
       
       // 2. เรียก getRestaurants พร้อม filters
-      const result = await getRestaurants(filters);
-      
-      // 3. ตั้งค่า state
-      setRestaurants(result.data);
+      // แยกการเรียก API กับการเรียงลำดับบน client:
+      // - API จะรับ filters ที่เป็นเงื่อนไขการกรอง (search/category/minRating/priceRange)
+      // - การเรียง (sort) จะทำที่ client เพื่อความรวดเร็ว (ข้อมูลไม่ใหญ่มาก)
+      const { sort, ...apiFilters } = filters;
+      const result = await getRestaurants(apiFilters);
+
+      // 3. ตั้งค่า state (จาก API)
+      let items = result.data || [];
+
+      // 4. ถ้ามี sort ให้ทำ client-side sorting (rating/name/reviews)
+      if (sort) {
+        if (sort === 'rating') {
+          items = items.slice().sort((a, b) => (parseFloat(b.averageRating) || 0) - (parseFloat(a.averageRating) || 0));
+        } else if (sort === 'name') {
+          items = items.slice().sort((a, b) => String(a.name).localeCompare(String(b.name)));
+        } else if (sort === 'reviews') {
+          items = items.slice().sort((a, b) => (parseInt(b.totalReviews, 10) || 0) - (parseInt(a.totalReviews, 10) || 0));
+        }
+      }
+
+      setRestaurants(items);
       
     } catch (err) {
       setError('ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
@@ -47,6 +65,11 @@ function RestaurantList({ onSelectRestaurant }) {
   // 5. handleFilterChange
   const handleFilterChange = (newFilters) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  // เพิ่ม helper สำหรับล้าง filters ทั้งหมด (รวม sort)
+  const clearFilters = () => {
+    setFilters({ search: '', category: '', minRating: '', priceRange: '', sort: '' });
   };
 
   return (

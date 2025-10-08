@@ -32,6 +32,15 @@ function FilterPanel({ onFilterChange, filters }) {
     onFilterChange({ priceRange: priceRange || '' });
   };
 
+  /**
+   * ฟังก์ชันสำหรับเปลี่ยนการเรียงลำดับ
+   * ส่งค่า sort กลับไปยัง parent ผ่าน onFilterChange
+   * ค่าที่รองรับ: '' (ค่าเริ่มต้น), 'rating', 'name', 'reviews'
+   */
+  const handleSortChange = (sortKey) => {
+    onFilterChange({ sort: sortKey || '' });
+  };
+
   return (
     <div className="filter-panel">
       <div className="filter-group">
@@ -43,6 +52,21 @@ function FilterPanel({ onFilterChange, filters }) {
           {categories.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
+        </select>
+      </div>
+
+      {/* Sort group - เรียงลำดับผลลัพธ์ */}
+      <div className="filter-group sort-group">
+        <label>เรียงตาม:</label>
+        <select
+          value={filters.sort || ''}
+          onChange={(e) => handleSortChange(e.target.value)}
+          className="sort-select"
+        >
+          <option value="">ค่าเริ่มต้น</option>
+          <option value="rating">คะแนนสูงสุด</option>
+          <option value="name">ชื่อ (A → Z)</option>
+          <option value="reviews">จำนวนรีวิว (มาก → น้อย)</option>
         </select>
       </div>
 
