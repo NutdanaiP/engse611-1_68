@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import FilterPanel from './FilterPanel';
 import { getRestaurants } from '../services/api';
 
+// Component หลักสำหรับแสดงรายการร้านอาหาร
 function RestaurantList({ onSelectRestaurant, theme, onToggleTheme }) {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,9 +83,11 @@ function RestaurantList({ onSelectRestaurant, theme, onToggleTheme }) {
         onToggleTheme={onToggleTheme}
       />
       
+      {/* แสดงสถานะการโหลด */}
       {loading && <div className="loading">กำลังโหลด...</div>}
       {error && <div className="error">{error}</div>}
       
+      {/* แสดงผลลัพธ์เมื่อโหลดเสร็จ */}
       {!loading && !error && (
         <>
           {restaurants.length === 0 ? (

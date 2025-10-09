@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// ลงทะเบียน routes ย่อย
+// ลงทะเบียน routes ย่อย - เชื่อมต่อ URL path กับ route handlers
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/reviews', reviewRoutes);
 

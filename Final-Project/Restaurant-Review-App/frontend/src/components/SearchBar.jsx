@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+// Component แถบค้นหาที่มี debounce เพื่อลดการเรียก API
 function SearchBar({ onSearch }) {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -35,11 +36,13 @@ function SearchBar({ onSearch }) {
     return () => clearTimeout(timer);
   }, [searchTerm, onSearch]);
 
+  // ฟังก์ชันจัดการการส่งฟอร์ม (กดปุ่ม Search หรือ Enter)
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
   };
 
+  // ฟังก์ชันล้างข้อความค้นหา
   const handleClear = () => {
     setSearchTerm('');
     onSearch('');

@@ -3,6 +3,7 @@ function ReviewList({ reviews }) {
     return <p className="no-reviews">ยังไม่มีรีวิว เป็นคนแรกที่รีวิวร้านนี้!</p>;
   }
 
+  // ฟังก์ชันจัดรูปแบบวันที่เป็นภาษาไทย
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('th-TH', {

@@ -74,11 +74,13 @@ router.get('/:id', async (req, res) => {
     const restaurants = await readJsonFile('restaurants.json');
     const reviews = await readJsonFile('reviews.json');
 
+    // ค้นหาร้านตาม ID (รองรับทั้ง string และ number)
     const restaurant = (restaurants || []).find(r => String(r.id) === String(id) || r.id === parseInt(id, 10));
     if (!restaurant) {
       return res.status(404).json({ success: false, message: 'ไม่พบร้านอาหารนี้' });
     }
 
+    // กรองรีวิวเฉพาะร้านนี้และเรียงลำดับ
     const restaurantId = parseInt(id, 10);
     const restaurantReviews = (reviews || []).filter(rv => parseInt(rv.restaurantId, 10) === restaurantId);
 

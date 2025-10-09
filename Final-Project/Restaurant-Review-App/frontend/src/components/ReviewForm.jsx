@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { addReview } from '../services/api';
 
+// Component ฟอร์มสำหรับเขียนรีวิว
 function ReviewForm({ restaurantId, onReviewAdded }) {
   const [formData, setFormData] = useState({
     userName: '',
@@ -11,6 +12,7 @@ function ReviewForm({ restaurantId, onReviewAdded }) {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
+  // ฟังก์ชันตรวจสอบความถูกต้องของฟอร์ม
   const validateForm = () => {
     const newErrors = {};
     
@@ -48,6 +50,7 @@ function ReviewForm({ restaurantId, onReviewAdded }) {
     return Object.keys(newErrors).length === 0;
   };
 
+  // ฟังก์ชันจัดการการส่งฟอร์ม
   const handleSubmit = async (e) => {
     e.preventDefault();
     

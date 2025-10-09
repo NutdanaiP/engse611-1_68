@@ -11,7 +11,7 @@ const hasDangerousCharacters = (str) => {
  */
 const validateReview = (req, res, next) => {
   const { restaurantId, userName, rating, comment } = req.body;
-  const errors = [];
+  const errors = []; // เก็บข้อผิดพลาดทั้งหมดเพื่อแสดงให้ผู้ใช้ทราบ
 
   // ========================================
   // ตัวอย่างที่ให้: ตรวจสอบ restaurantId (ครบ 100%)
@@ -86,7 +86,7 @@ const validateReview = (req, res, next) => {
     return res.status(400).json({
       success: false,
       message: 'ข้อมูลไม่ถูกต้อง',
-      errors: errors
+      errors: errors // ส่งรายละเอียดข้อผิดพลาดทั้งหมด
     });
   }
 

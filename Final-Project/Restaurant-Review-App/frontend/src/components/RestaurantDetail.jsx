@@ -3,6 +3,7 @@ import ReviewList from './ReviewList';
 import ReviewForm from './ReviewForm';
 import { getRestaurantById } from '../services/api';
 
+// Component แสดงรายละเอียดร้านอาหารและรีวิว
 function RestaurantDetail({ restaurantId, onBack }) {
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,6 @@ function RestaurantDetail({ restaurantId, onBack }) {
   };
 
   const handleReviewAdded = () => {
-    // Refresh ข้อมูลหลังจากเพิ่มรีวิวใหม่
     fetchRestaurantDetail();
   };
 

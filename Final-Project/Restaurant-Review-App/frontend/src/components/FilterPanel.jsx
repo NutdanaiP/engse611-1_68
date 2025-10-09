@@ -8,6 +8,7 @@ function FilterPanel({ onFilterChange, filters, theme, onToggleTheme }) {
     'ฟาสต์ฟู้ด'
   ];
 
+  // ฟังก์ชันจัดการการเปลี่ยนหมวดหมู่
   const handleCategoryChange = (category) => {
     onFilterChange({ 
       category: category === 'ทั้งหมด' ? '' : category 
