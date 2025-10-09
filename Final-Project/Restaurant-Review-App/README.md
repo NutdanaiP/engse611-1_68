@@ -102,18 +102,18 @@ npm run dev
 ## Screenshots
 ### หน้าแรก
 - Light Mode
-![Home (Light mode)](Restaurant-Review-App/screenshots/Home-light.png)
+![Home (Light mode)](screenshots/Home-light.png)
 - Dark Mode
-![Home (Dark mode)](Restaurant-Review-App/screenshots/Home-dark.png)
+![Home (Dark mode)](screenshots/Home-dark.png)
 
 ### รายละเอียดร้าน
-![Detail](Restaurant-Review-App/screenshots/Detail.png)
+![Detail](screenshots/Detail.png)
 
 ### ฟอร์มรีวิว
 - Review-ร้านราเมงโอซากะ
-![Review](Restaurant-Review-App/screenshots/Review-Form-1.png)
+![Review](screenshots/Review-Form-1.png)
 - Review-ร้านส้มตำน้องเมย์
-![Review](Restaurant-Review-App/screenshots/Review-Form-2.png)
+![Review](screenshots/Review-Form-2.png)
 
 ## ผู้พัฒนา
 - นาย ณัฐดนัย แปงจิตต์
