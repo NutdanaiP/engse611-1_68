@@ -13,17 +13,6 @@ function SearchBar({ onSearch }) {
   // - ถ้าผู้ใช้พิมพ์ "ส้มตำ" (5 ตัวอักษร)
   // - ไม่มี debounce จะเรียก API 5 ครั้ง: "ส", "ส้", "ส้ม", "ส้มต", "ส้มตำ"
   // - มี debounce จะเรียก API แค่ 1 ครั้ง หลังจากพิมพ์เสร็จ 500ms
-  //
-  // ขั้นตอน:
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (searchTerm !== undefined) {
-  //       onSearch(searchTerm);
-  //     }
-  //   }, 500);
-  //   
-  //   return () => clearTimeout(timer);
-  // }, [searchTerm, onSearch]);
 
   // Debounce effect
   useEffect(() => {
