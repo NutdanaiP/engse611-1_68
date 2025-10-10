@@ -2,7 +2,7 @@ import React from 'react';
 import ProfileCard from './ProfileCard';
 
 function App() {
-    // ข้อมูลโปรไฟล์ตัวอย่าง
+    // ข้อมูลโปรไฟล์ตัวอย่าง.
     const sampleProfile = {
         name: "ณัฐดนัย แปงจิตต์",
         studentId: "68543210082-2",
