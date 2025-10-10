@@ -1,4 +1,4 @@
-// ไฟล์: app.js - ใช้ module
+// ไฟล์: app.js - ใช้ module.
 const math = require('./math');
 
 console.log(math.add(5, 3));      // 8
