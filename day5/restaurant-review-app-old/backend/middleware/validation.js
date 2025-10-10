@@ -9,7 +9,7 @@ const validateReview = (req, res, next) => {
   // TODO: ตรวจสอบ userName
   // - ต้องมีค่า
   // - ความยาว 2-50 ตัวอักษร
-  // - ไม่มีอักขระพิเศษที่อันตราย (<script , etc.)
+  // - ไม่มีอักขระพิเศษที่อันตราย (<script, etc.)
   
   // TODO: ตรวจสอบ rating
   // - ต้องมีค่า
